@@ -39,8 +39,6 @@ class AlertCenter {
     if (isBad && !wasBad) {
       this.add(severity, message);
     }
-    // Save on every call (not just when firing) so a recovery is
-    // remembered even if the user never sees a "recovered" alert for it.
     Storage.set(Storage.KEYS.ALERT_STATE, this._lastState);
   }
 
@@ -214,7 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ignoredIfaces = new Set(Storage.get(Storage.KEYS.IGNORED_INTERFACES, {})[snap.id] || []);
     (snap.interfaces || []).forEach((iface) => {
-      if (ignoredIfaces.has(iface.id)) return; // permanently silenced by the user — never alert
+      if (ignoredIfaces.has(iface.id)) return; // manually muted by the user
+      if (!iface.everOnline) return; // never seen online — almost certainly an unused port, not a failure
       alertCenter.reportState(
         `${snap.id}-iface-${iface.id}`,
         iface.status === 'offline',
