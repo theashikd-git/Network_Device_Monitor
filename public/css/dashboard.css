@@ -595,24 +595,6 @@
   border-top: 1px solid var(--border);
 }
 
-.iface-mute-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 11.5px;
-  font-weight: 600;
-  transition: all var(--transition-base);
-}
-.iface-mute-btn svg { width: 14px; height: 14px; }
-.iface-mute-btn:hover { border-color: var(--border-bright); color: var(--text-secondary); }
-.iface-mute-btn.muted { background: var(--accent-warn-glow); color: var(--accent-warn); border-color: var(--accent-warn-dim); }
-.iface-mute-btn.muted:hover { color: var(--accent-warn); }
-
 /* ============================================================
    FLEET OVERVIEW
    ============================================================ */
@@ -854,3 +836,23 @@
   .table-toolbar { flex-direction: column; align-items: stretch; }
   .filter-pills { flex-wrap: wrap; }
 }
+.iface-mute-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  transition: all var(--transition-base);
+}
+.iface-mute-btn svg { width: 14px; height: 14px; }
+.iface-mute-btn:hover { border-color: var(--border-bright); color: var(--text-secondary); }
+.iface-mute-btn.muted { background: var(--accent-warn-glow); color: var(--accent-warn); border-color: var(--accent-warn-dim); }
+.iface-mute-btn.muted:hover { color: var(--accent-warn); }
+
+.tag-neutral { background: var(--surface-hover); color: var(--text-muted); }
+.iface-auto-note { font-size: 11px; color: var(--text-muted); font-style: italic; }
