@@ -101,22 +101,30 @@ class InterfaceTable {
             <div class="empty-sub">Try a different search term or clear the active filter.</div>
           </div>
         </td></tr>`;
-    } else {
+} else {
       this.tbodyEl.innerHTML = rows.map((iface) => {
         const isIgnored = ignored.has(iface.id);
+        const neverOnline = iface.everOnline === false;
+        const statusTag = iface.status === 'online'
+          ? '<span class="tag tag-good">online</span>'
+          : neverOnline
+            ? '<span class="tag tag-neutral">unused</span>'
+            : '<span class="tag tag-crit">offline</span>';
         return `
         <tr class="${iface.status === 'offline' ? 'iface-row-offline' : ''}">
           <td class="iface-name">${Utils.escapeHtml(iface.id)}</td>
-          <td><span class="tag ${iface.status === 'online' ? 'tag-good' : 'tag-crit'}">${iface.status}</span></td>
+          <td>${statusTag}</td>
           <td class="num-cell col-optional">${iface.rx} Mbps</td>
           <td class="num-cell col-optional">${iface.tx} Mbps</td>
           <td>
-            <button class="iface-mute-btn ${isIgnored ? 'muted' : ''}" data-toggle-ignore="${Utils.escapeHtml(iface.id)}" title="${isIgnored ? 'Alerts muted — click to re-enable' : 'Mute down-alerts for this interface'}">
+            ${neverOnline
+              ? '<span class="iface-auto-note" title="Never seen online — automatically excluded from down-alerts. It will start being monitored the moment it comes online for the first time.">Auto-ignored</span>'
+              : `<button class="iface-mute-btn ${isIgnored ? 'muted' : ''}" data-toggle-ignore="${Utils.escapeHtml(iface.id)}" title="${isIgnored ? 'Alerts muted — click to re-enable' : 'Mute down-alerts for this interface'}">
               ${isIgnored
                 ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 9v3a3 3 0 005.12 2.12M15 9.34V4a3 3 0 00-5.94-.6M17 16.95A7 7 0 015 12v-2m14 0v2a7 7 0 01-.11 1.23M12 19v3M8 22h8M1 1l22 22"/></svg>'
                 : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 9v3a3 3 0 003 3 3 3 0 003-3V9a3 3 0 10-6 0z"/><path d="M5 10v2a7 7 0 0014 0v-2M12 19v3M8 22h8"/></svg>'}
               ${isIgnored ? 'Muted' : ''}
-            </button>
+            </button>`}
           </td>
         </tr>
       `;
@@ -126,7 +134,6 @@ class InterfaceTable {
         btn.addEventListener('click', () => this._toggleIgnored(btn.dataset.toggleIgnore));
       });
     }
-
     if (this.footEl) {
       const total = this.data.length;
       const shown = rows.length;
