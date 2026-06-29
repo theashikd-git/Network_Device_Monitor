@@ -8,7 +8,6 @@
 
 const snmp = require('net-snmp');
 
-// ---- Standard OIDs (IF-MIB / SNMPv2-MIB — universal across vendors) ----
 const OID = {
   sysUpTime: '1.3.6.1.2.1.1.3.0',
   sysName: '1.3.6.1.2.1.1.5.0',
@@ -30,11 +29,6 @@ function openSession(device) {
   return snmp.createSession(device.ip, device.snmpCommunity, {
     port: device.snmpPort || 161,
     version,
-    // Keep this well under the poll interval. On a real LAN, SNMP replies
-    // come back in single-digit milliseconds — this timeout only matters
-    // for genuinely unreachable devices, so it shouldn't eat into the next
-    // poll cycle. With pollIntervalMs around 3000, 1500ms + 0 retries means
-    // a dead device is detected and reported well before the next tick.
     timeout: 1500,
     retries: 0,
   });
@@ -58,10 +52,6 @@ function tableAsync(session, oid) {
   });
 }
 
-/**
- * Poll a single device. Returns a normalized snapshot, or throws if the
- * device is unreachable (caller should mark it offline rather than crash).
- */
 async function pollDevice(device) {
   const session = openSession(device);
 
@@ -91,14 +81,6 @@ async function pollDevice(device) {
     }).filter((i) => !/loopback|lo0/i.test(i.id));
 
     // ---- CPU: prefer the standard per-core table, average across cores ----
-    // On multi-core MikroTik devices (CCR series), the vendor-specific
-    // scalar OID (mtxrHlCpuLoad) has been observed returning a sum across
-    // all cores rather than a single 0-100% figure (e.g. 1200% on a 12-core
-    // router idling at ~1-2% per core). The standard HOST-RESOURCES-MIB
-    // per-core table does not have this problem, so it's used as the
-    // primary source whenever a device exposes it — which is most devices,
-    // MikroTik included. The MikroTik-specific OID is only used as a
-    // fallback for devices that don't expose the standard table at all.
     let cpuPercent = null;
     let memoryPercent = null;
 
@@ -115,6 +97,27 @@ async function pollDevice(device) {
       } catch (e) { /* neither source available; leave null rather than guess */ }
     }
 
+    // ---- Memory: standard HOST-RESOURCES-MIB storage table ----
+    // hrStorageTable reports total/used for several storage units (RAM,
+    // disk, etc). Column 3 (hrStorageDescr) names each row — we look for
+    // "Memory" or "RAM", not disk space. Columns 5/6 are total/used in
+    // "allocation units" — since we only need a percentage, the unit
+    // cancels out and doesn't need to be applied separately.
+    try {
+      const storageTable = await tableAsync(session, '1.3.6.1.2.1.25.2.3');
+      const memRow = Object.values(storageTable).find((row) => {
+        const descr = (row[3] || '').toString().toLowerCase();
+        return descr.includes('memory') || descr.includes('ram');
+      });
+      if (memRow) {
+        const total = Number(memRow[5]);
+        const used = Number(memRow[6]);
+        if (total > 0 && !isNaN(used)) {
+          memoryPercent = (used / total) * 100;
+        }
+      }
+    } catch (e) { /* device doesn't expose this table; leave memoryPercent null */ }
+
     return {
       id: device.id,
       online: true,
@@ -129,14 +132,6 @@ async function pollDevice(device) {
   }
 }
 
-/**
- * Quick one-off check used by the "Test Connection" button when adding a
- * device through the Settings page. Uses a slightly longer timeout than
- * the recurring poller, since this runs once interactively rather than
- * every few seconds — we can afford to wait a bit longer for a slow or
- * distant device here. Never throws; always resolves with a result object
- * so the API layer can return a clean success/failure response.
- */
 async function testConnection(deviceInput) {
   const session = snmp.createSession(deviceInput.ip, deviceInput.snmpCommunity, {
     port: deviceInput.snmpPort || 161,
