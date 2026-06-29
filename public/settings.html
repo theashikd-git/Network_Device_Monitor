@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — NETMON</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+  <div class="page-loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text mono">LOADING SETTINGS…</div>
+  </div>
+
+  <div class="app-shell">
+    <div class="nav-overlay"></div>
+
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">N</div>
+        <span class="brand-name">NETMON</span>
+      </div>
+      <div class="sidebar-scroll">
+        <div class="nav-section">
+          <div class="nav-section-title">Fleet</div>
+          <ul class="nav-list">
+            <li><a href="fleet.html" class="nav-item">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+              <span class="nav-label">Overview</span>
+            </a></li>
+            <li><a href="alerts.html" class="nav-item">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></span>
+              <span class="nav-label">Alerts</span>
+              <span class="nav-badge" data-alert-badge style="display:none;"></span>
+            </a></li>
+            <li><a href="settings.html" class="nav-item active">
+              <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+              <span class="nav-label">Settings</span>
+            </a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <button class="sidebar-collapse-btn" type="button" aria-label="Collapse sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          <span class="nav-label">Collapse</span>
+        </button>
+      </div>
+    </nav>
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-nav-toggle" aria-label="Open navigation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <div class="device-identity">
+          <span class="name">Settings</span>
+          <span class="ip mono">Manage devices</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle-switch" aria-label="Toggle dark mode" aria-pressed="false"></button>
+        <button class="icon-btn" aria-label="Notifications" onclick="window.location.href='alerts.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="badge-count" data-alert-badge style="display:none;"></span>
+        </button>
+        <div class="user-chip">
+          <div class="user-avatar">AD</div>
+          <span class="uname">admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Settings</h1>
+          <p class="page-subtitle">Add or remove the routers and switches NETMON monitors, no file editing needed</p>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Monitored devices</div>
+              <div class="panel-title-sub">Removing a device stops polling it immediately</div>
+            </div>
+          </div>
+          <div id="device-manage-list"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Add a device</div>
+              <div class="panel-title-sub">Test the connection before saving to catch typos early</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <form id="add-device-form">
+              <div class="form-row">
+                <label for="field-name">Device name</label>
+                <input class="form-input" type="text" id="field-name" placeholder="e.g. Office Router" required />
+              </div>
+
+              <div class="form-row">
+                <label for="field-id">Device ID</label>
+                <input class="form-input" type="text" id="field-id" placeholder="e.g. office-router" required />
+                <div class="form-hint">Letters, numbers, hyphens, underscores only. Used internally, never shown.</div>
+              </div>
+
+              <div class="form-row">
+                <label for="field-ip">IP address</label>
+                <input class="form-input mono" type="text" id="field-ip" placeholder="e.g. 192.168.1.1" required />
+              </div>
+
+              <div class="form-row form-row-split">
+                <div>
+                  <label for="field-vendor">Vendor</label>
+                  <select class="form-select" id="field-vendor">
+                    <option value="mikrotik">MikroTik</option>
+                    <option value="cisco">Cisco</option>
+                    <option value="tplink">TP-Link</option>
+                    <option value="ubiquiti">Ubiquiti</option>
+                    <option value="generic">Other / generic</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="field-type">Type</label>
+                  <select class="form-select" id="field-type">
+                    <option value="router">Router</option>
+                    <option value="switch">Switch</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row form-row-split">
+                <div>
+                  <label for="field-snmp-version">SNMP version</label>
+                  <select class="form-select" id="field-snmp-version">
+                    <option value="2c">v2c (most common)</option>
+                    <option value="1">v1</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="field-port">SNMP port</label>
+                  <input class="form-input mono" type="text" id="field-port" placeholder="161" />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="field-community">SNMP community string</label>
+                <input class="form-input mono" type="text" id="field-community" placeholder="e.g. public" required />
+                <div class="form-hint">Set this on the device itself first, see SETUP.md for your device's brand.</div>
+              </div>
+
+              <div id="test-connection-result" class="test-connection-result"></div>
+
+              <div class="form-actions">
+                <button type="button" class="btn" id="test-connection-btn">Test Connection</button>
+                <button type="submit" class="btn btn-primary" id="add-device-btn" disabled>Add Device</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app-shell.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

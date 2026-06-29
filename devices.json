@@ -1,0 +1,17 @@
+{
+  "_readme": "This file is intentionally empty right now — zero devices. The app runs fine like this. When you're ready to add your first real device, copy the example block below into the \"devices\" array, fill in the real ip and snmpCommunity, and restart the server (Ctrl+C, then npm start again). See SETUP.md for how to turn SNMP on for each device first.",
+
+  "_example_device_do_not_use_as_is": {
+    "id": "router-1",
+    "name": "My Router",
+    "ip": "192.168.1.1",
+    "vendor": "mikrotik",
+    "type": "router",
+    "snmpVersion": "2c",
+    "snmpCommunity": "public",
+    "snmpPort": 161
+  },
+
+  "pollIntervalMs": 3000,
+  "devices": []
+}
